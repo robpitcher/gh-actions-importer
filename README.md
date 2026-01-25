@@ -63,6 +63,33 @@ We highly recommend using the [official GitHub Container Registry to pull the Gi
 CONTAINER_REGISTRY=my-custom-registry.com
 ```
 
+#### Using a custom Docker image
+
+You can override the Docker image used by GitHub Actions Importer by setting the `GITHUB_ACTIONS_IMPORTER_CLI_IMAGE` environment variable. This takes precedence over the `CONTAINER_REGISTRY` setting and allows you to use a completely custom image.
+
+**For bash/zsh:**
+
+```bash
+export GITHUB_ACTIONS_IMPORTER_CLI_IMAGE=ghcr.io/robpitcher/actions-importer-cli:latest
+gh actions-importer update
+gh actions-importer audit ...
+```
+
+**For GitHub Actions workflows:**
+
+```yaml
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTIONS_IMPORTER_CLI_IMAGE: ghcr.io/robpitcher/actions-importer-cli:latest
+    steps:
+      - name: Update Actions Importer
+        run: gh actions-importer update
+      - name: Run migration
+        run: gh actions-importer migrate ...
+```
+
 ### Documentation
 
 Detailed information about how to use GitHub Actions Importer can be found in the [documentation](https://docs.github.com/en/actions/migrating-to-github-actions/automating-migration-with-github-actions-importer).

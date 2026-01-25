@@ -7,6 +7,8 @@ namespace ActionsImporter;
 public class App
 {
     private const string ActionsImporterImage = "actions-importer/cli";
+    private const string DefaultImageRegistry = "ghcr.io";
+    private const string CliImageEnvironmentVariable = "GITHUB_ACTIONS_IMPORTER_CLI_IMAGE";
 
     private readonly IDockerService _dockerService;
     private readonly IProcessService _processService;
@@ -27,18 +29,40 @@ public class App
         _processService = processService;
         _configurationService = configurationService;
         _environmentVariables = environmentVariables;
-        ActionsImporterContainerRegistry = _environmentVariables.TryGetValue("CONTAINER_REGISTRY", out var registry) ? registry : "ghcr.io";
+        ActionsImporterContainerRegistry = _environmentVariables.TryGetValue("CONTAINER_REGISTRY", out var registry) ? registry : DefaultImageRegistry;
+    }
+
+    /// <summary>
+    /// Gets the full Docker image name with registry and tag.
+    /// Priority: GITHUB_ACTIONS_IMPORTER_CLI_IMAGE env var > CONTAINER_REGISTRY/actions-importer/cli:tag > default
+    /// </summary>
+    private string GetFullImageName()
+    {
+        if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
+        {
+            return customImage;
+        }
+
+        return $"{ActionsImporterContainerRegistry}/{ImageName}";
     }
 
     public async Task<int> UpdateActionsImporterAsync()
     {
         await _dockerService.VerifyDockerRunningAsync().ConfigureAwait(false);
 
-        await _dockerService.UpdateImageAsync(
-            ActionsImporterImage,
-            ActionsImporterContainerRegistry,
-            ImageTag
-        );
+        // If using custom image via env var, pull that; otherwise use default logic
+        if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
+        {
+            await _dockerService.UpdateImageAsync(customImage);
+        }
+        else
+        {
+            await _dockerService.UpdateImageAsync(
+                ActionsImporterImage,
+                ActionsImporterContainerRegistry,
+                ImageTag
+            );
+        }
 
         return 0;
     }
@@ -46,20 +70,34 @@ public class App
     public async Task<int> ExecuteActionsImporterAsync(string[] args)
     {
         await _dockerService.VerifyDockerRunningAsync().ConfigureAwait(false);
-        await _dockerService.VerifyImagePresentAsync(
-            ActionsImporterImage,
-            ActionsImporterContainerRegistry,
-            ImageTag,
-            IsPrerelease
-        ).ConfigureAwait(false);
 
-        await _dockerService.ExecuteCommandAsync(
-            ActionsImporterImage,
-            ActionsImporterContainerRegistry,
-            ImageTag,
-            NoHostNetwork,
-            args.Select(x => x.EscapeIfNeeded()).ToArray()
-        );
+        // If using custom image via env var, verify and execute with that; otherwise use default logic
+        if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
+        {
+            await _dockerService.VerifyImagePresentAsync(customImage, IsPrerelease).ConfigureAwait(false);
+            await _dockerService.ExecuteCommandAsync(
+                customImage,
+                NoHostNetwork,
+                args.Select(x => x.EscapeIfNeeded()).ToArray()
+            );
+        }
+        else
+        {
+            await _dockerService.VerifyImagePresentAsync(
+                ActionsImporterImage,
+                ActionsImporterContainerRegistry,
+                ImageTag,
+                IsPrerelease
+            ).ConfigureAwait(false);
+
+            await _dockerService.ExecuteCommandAsync(
+                ActionsImporterImage,
+                ActionsImporterContainerRegistry,
+                ImageTag,
+                NoHostNetwork,
+                args.Select(x => x.EscapeIfNeeded()).ToArray()
+            );
+        }
         return 0;
     }
 
@@ -67,7 +105,8 @@ public class App
     {
         var (standardOutput, standardError, exitCode) = await _processService.RunAndCaptureAsync("gh", "version");
         var ghActionsImporterVersion = await _processService.RunAndCaptureAsync("gh", "extension list");
-        var actionsImporterVersion = await _processService.RunAndCaptureAsync("docker", $"run --rm {ActionsImporterContainerRegistry}/{ImageName} version", throwOnError: false);
+        var fullImageName = GetFullImageName();
+        var actionsImporterVersion = await _processService.RunAndCaptureAsync("docker", $"run --rm {fullImageName} version", throwOnError: false);
 
         var formattedGhVersion = standardOutput.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).FirstOrDefault();
         var formattedGhActionsImporterVersion = ghActionsImporterVersion.standardOutput.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -76,7 +115,7 @@ public class App
 
         Console.WriteLine(formattedGhVersion);
         Console.WriteLine(formattedGhActionsImporterVersion);
-        Console.WriteLine($"actions-importer/cli:{ImageTag}\t{formattedActionsImporterVersion}");
+        Console.WriteLine($"{fullImageName}\t{formattedActionsImporterVersion}");
 
         return 0;
     }
@@ -85,8 +124,9 @@ public class App
     {
         try
         {
-            var latestImageDigestTask = _dockerService.GetLatestImageDigestAsync(ImageName, ActionsImporterContainerRegistry);
-            var currentImageDigestTask = _dockerService.GetCurrentImageDigestAsync(ImageName, ActionsImporterContainerRegistry);
+            var fullImageName = GetFullImageName();
+            var latestImageDigestTask = _dockerService.GetLatestImageDigestAsync(fullImageName);
+            var currentImageDigestTask = _dockerService.GetCurrentImageDigestAsync(fullImageName);
 
             await Task.WhenAll(latestImageDigestTask, currentImageDigestTask);
 
@@ -112,7 +152,18 @@ public class App
         if (args.Contains($"--{Commands.Configure.OptionalFeaturesOption.Name}"))
         {
             await _dockerService.VerifyDockerRunningAsync().ConfigureAwait(false);
-            var availableFeatures = await _dockerService.GetFeaturesAsync(ActionsImporterImage, ActionsImporterContainerRegistry, ImageTag).ConfigureAwait(false);
+
+            // If using custom image via env var, get features from that; otherwise use default logic
+            List<Feature> availableFeatures;
+            if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
+            {
+                availableFeatures = await _dockerService.GetFeaturesAsync(customImage).ConfigureAwait(false);
+            }
+            else
+            {
+                availableFeatures = await _dockerService.GetFeaturesAsync(ActionsImporterImage, ActionsImporterContainerRegistry, ImageTag).ConfigureAwait(false);
+            }
+
             try
             {
                 newVariables = _configurationService.GetFeaturesInput(availableFeatures);

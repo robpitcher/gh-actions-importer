@@ -482,4 +482,171 @@ public class DockerServiceTests
         Assert.AreEqual("4256ea72fd01deac3e967f6b19f907587dcd6f0a976301f1aecc73dc6f146a4a", result);
         _processService.VerifyAll();
     }
+
+    [Test]
+    public async Task UpdateImageAsync_WithFullImageName_PullsCorrectImage()
+    {
+        // Arrange
+        var fullImageName = "ghcr.io/robpitcher/actions-importer-cli:latest";
+
+        _processService.Setup(handler =>
+            handler.RunAndCaptureAsync(
+                "docker",
+                $"pull {fullImageName} --quiet",
+                It.IsAny<string?>(),
+                It.IsAny<IEnumerable<(string, string)>?>(),
+                It.IsAny<bool>(),
+                null
+            )
+        ).ReturnsAsync(("", "", 0));
+
+        // Act
+        await _dockerService.UpdateImageAsync(fullImageName);
+
+        // Assert
+        _processService.VerifyAll();
+    }
+
+    [Test]
+    public async Task ExecuteCommandAsync_WithFullImageName_RunsCorrectly()
+    {
+        // Arrange
+        var fullImageName = "ghcr.io/robpitcher/actions-importer-cli:latest";
+        var arguments = new[] { "run", "this", "command" };
+        var noHostNetwork = false;
+
+        _processService.Setup(handler =>
+            handler.RunAsync(
+                "docker",
+                $"run --rm -t --network=host -v \"{Directory.GetCurrentDirectory()}\":/data {fullImageName} {string.Join(' ', arguments)}",
+                Directory.GetCurrentDirectory(),
+                new[] { new ValueTuple<string, string>("MSYS_NO_PATHCONV", "1") },
+                true
+            )
+        ).Returns(Task.CompletedTask);
+
+        // Act
+        await _dockerService.ExecuteCommandAsync(fullImageName, noHostNetwork, arguments);
+
+        // Assert
+        _processService.VerifyAll();
+    }
+
+    [Test]
+    public async Task VerifyImagePresentAsync_WithFullImageName_VerifiesCorrectly()
+    {
+        // Arrange
+        var fullImageName = "ghcr.io/robpitcher/actions-importer-cli:latest";
+
+        _processService.Setup(handler =>
+            handler.RunAsync(
+                "docker",
+                $"image inspect {fullImageName}",
+                It.IsAny<string?>(),
+                It.IsAny<IEnumerable<(string, string)>?>(),
+                It.IsAny<bool>()
+            )
+        ).Returns(Task.CompletedTask);
+
+        // Act, Assert
+        Assert.DoesNotThrowAsync(() => _dockerService.VerifyImagePresentAsync(fullImageName, false));
+        _processService.VerifyAll();
+    }
+
+    [Test]
+    public async Task GetFeaturesAsync_WithFullImageName_ReturnsFeatures()
+    {
+        // Arrange
+        var fullImageName = "ghcr.io/robpitcher/actions-importer-cli:latest";
+        var arguments = new[] { "list-features", "--json" };
+        var features = new List<Feature>
+        {
+            new Feature
+            {
+                Name = "actions/cache",
+                Description = "Control usage of actions/cache inside of workflows. Outputs a comment if not enabled.",
+                Enabled = false,
+                EnvName = "FEATURE_ACTIONS_CACHE",
+            }
+        };
+        var featuresJSON = JsonSerializer.Serialize(features);
+
+        _processService.Setup(handler =>
+            handler.RunAndCaptureAsync(
+                "docker",
+                $"run --rm -t {fullImageName} {string.Join(' ', arguments)}",
+                null,
+                null,
+                false,
+                null
+            )
+        ).Returns(Task.FromResult((featuresJSON, "", 0)));
+
+        // Act
+        var featuresResult = await _dockerService.GetFeaturesAsync(fullImageName);
+        var featuresResultJSON = JsonSerializer.Serialize(featuresResult);
+
+        // Assert
+        Assert.AreEqual(featuresJSON, featuresResultJSON);
+    }
+
+    [Test]
+    public async Task GetLatestImageDigestAsync_WithFullImageName_ParsesDigestCorrectly()
+    {
+        // Arrange
+        var fullImageName = "ghcr.io/robpitcher/actions-importer-cli:latest";
+        var manifestResult = @"
+{
+        ""schemaVersion"": 2,
+        ""mediaType"": ""application/vnd.docker.distribution.manifest.v2+json"",
+        ""config"": {
+                ""mediaType"": ""application/vnd.docker.container.image.v1+json"",
+                ""size"": 8933,
+                ""digest"": ""sha256:4256ea72fd01deac3e967f6b19f907587dcd6f0a976301f1aecc73dc6f146a4a""
+        }
+}";
+
+        _processService.Setup(handler =>
+            handler.RunAndCaptureAsync(
+                "docker",
+                $"manifest inspect {fullImageName}",
+                It.IsAny<string?>(),
+                It.IsAny<IEnumerable<(string, string)>?>(),
+                It.IsAny<bool>(),
+                null
+            )
+        ).ReturnsAsync((manifestResult, "", 0));
+
+        // Act
+        var result = await _dockerService.GetLatestImageDigestAsync(fullImageName);
+
+        // Assert
+        Assert.AreEqual("4256ea72fd01deac3e967f6b19f907587dcd6f0a976301f1aecc73dc6f146a4a", result);
+        _processService.VerifyAll();
+    }
+
+    [Test]
+    public async Task GetCurrentImageDigestAsync_WithFullImageName_ParsesDigestCorrectly()
+    {
+        // Arrange
+        var fullImageName = "ghcr.io/robpitcher/actions-importer-cli:latest";
+
+        _processService.Setup(handler =>
+            handler.RunAndCaptureAsync(
+                "docker",
+                $"image inspect --format={{{{.Id}}}} {fullImageName}",
+                It.IsAny<string?>(),
+                It.IsAny<IEnumerable<(string, string)>?>(),
+                It.IsAny<bool>(),
+                null
+            )
+        ).ReturnsAsync(("sha256:67eed1493c461efd993be9777598a456562f4e0c6b0bddcb19d819220a06dd4b", "", 0));
+
+        // Act
+        var result = await _dockerService.GetCurrentImageDigestAsync(fullImageName);
+
+        // Assert
+        Assert.AreEqual("67eed1493c461efd993be9777598a456562f4e0c6b0bddcb19d819220a06dd4b", result);
+        _processService.VerifyAll();
+    }
 }

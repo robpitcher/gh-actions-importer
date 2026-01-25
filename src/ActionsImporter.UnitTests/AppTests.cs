@@ -40,18 +40,17 @@ public class AppTests
     public async Task CheckForUpdates_NoUpdatesNeeded(string? latestImage, string? currentImage, string result)
     {
         // Arrange
-        var image = "actions-importer/cli:latest";
-        var server = "ghcr.io";
+        var fullImageName = "ghcr.io/actions-importer/cli:latest";
 
         using var stringWriter = new StringWriter();
         Console.SetOut(stringWriter);
 
         _dockerService.Setup(handler =>
-            handler.GetLatestImageDigestAsync(image, server)
+            handler.GetLatestImageDigestAsync(fullImageName)
         ).ReturnsAsync(latestImage);
 
         _dockerService.Setup(handler =>
-            handler.GetCurrentImageDigestAsync(image, server)
+            handler.GetCurrentImageDigestAsync(fullImageName)
         ).ReturnsAsync(currentImage);
 
         // Act
@@ -66,14 +65,13 @@ public class AppTests
     public async Task CheckForUpdates_RaisesCaughtException()
     {
         // Arrange
-        var image = "actions-importer/cli";
-        var server = "ghcr.io";
+        var fullImageName = "ghcr.io/actions-importer/cli:latest";
 
         using var stringWriter = new StringWriter();
         Console.SetOut(stringWriter);
 
         _dockerService.Setup(handler =>
-            handler.GetLatestImageDigestAsync(image, server)
+            handler.GetLatestImageDigestAsync(fullImageName)
         ).ThrowsAsync(new Exception());
 
         // Act
@@ -82,5 +80,70 @@ public class AppTests
         // Assert
         Assert.AreEqual("", stringWriter.ToString());
         _processService.VerifyAll();
+    }
+
+    [Test]
+    public async Task CheckForUpdates_WithCustomImage_UsesCustomImage()
+    {
+        // Arrange
+        var customImage = "ghcr.io/robpitcher/actions-importer-cli:latest";
+        var envVars = ImmutableDictionary<string, string>.Empty.Add("GITHUB_ACTIONS_IMPORTER_CLI_IMAGE", customImage);
+        var app = new App(_dockerService.Object, _processService.Object, _configurationService.Object, envVars);
+
+        using var stringWriter = new StringWriter();
+        Console.SetOut(stringWriter);
+
+        _dockerService.Setup(handler =>
+            handler.GetLatestImageDigestAsync(customImage)
+        ).ReturnsAsync("4256ea72fd01deac3e967f6b19f907587dcd6f0a976301f1aecc73dc6f146a4a");
+
+        _dockerService.Setup(handler =>
+            handler.GetCurrentImageDigestAsync(customImage)
+        ).ReturnsAsync("4256ea72fd01deac3e967f6b19f907587dcd6f0a976301f1aecc73dc6f146a4a");
+
+        // Act
+        await app.CheckForUpdatesAsync();
+
+        // Assert
+        Assert.AreEqual("", stringWriter.ToString());
+        _dockerService.VerifyAll();
+    }
+
+    [Test]
+    public async Task UpdateActionsImporter_WithDefaultImage_UsesDefaultImage()
+    {
+        // Arrange
+        _dockerService.Setup(handler => handler.VerifyDockerRunningAsync()).Returns(Task.CompletedTask);
+        _dockerService.Setup(handler =>
+            handler.UpdateImageAsync("actions-importer/cli", "ghcr.io", "latest")
+        ).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _app.UpdateActionsImporterAsync();
+
+        // Assert
+        Assert.AreEqual(0, result);
+        _dockerService.VerifyAll();
+    }
+
+    [Test]
+    public async Task UpdateActionsImporter_WithCustomImage_UsesCustomImage()
+    {
+        // Arrange
+        var customImage = "ghcr.io/robpitcher/actions-importer-cli:latest";
+        var envVars = ImmutableDictionary<string, string>.Empty.Add("GITHUB_ACTIONS_IMPORTER_CLI_IMAGE", customImage);
+        var app = new App(_dockerService.Object, _processService.Object, _configurationService.Object, envVars);
+
+        _dockerService.Setup(handler => handler.VerifyDockerRunningAsync()).Returns(Task.CompletedTask);
+        _dockerService.Setup(handler =>
+            handler.UpdateImageAsync(customImage)
+        ).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await app.UpdateActionsImporterAsync();
+
+        // Assert
+        Assert.AreEqual(0, result);
+        _dockerService.VerifyAll();
     }
 }

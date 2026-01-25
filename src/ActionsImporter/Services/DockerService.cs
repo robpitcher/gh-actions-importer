@@ -21,7 +21,18 @@ public class DockerService : IDockerService
         return DockerPullAsync(image, server, version);
     }
 
+    public Task UpdateImageAsync(string fullImageName)
+    {
+        return DockerPullAsync(fullImageName);
+    }
+
     public async Task ExecuteCommandAsync(string image, string server, string version, bool noHostNetwork, params string[] arguments)
+    {
+        var fullImageName = $"{server}/{image}:{version}";
+        await ExecuteCommandAsync(fullImageName, noHostNetwork, arguments);
+    }
+
+    public async Task ExecuteCommandAsync(string fullImageName, bool noHostNetwork, params string[] arguments)
     {
         var actionsImporterArguments = new List<string>
         {
@@ -51,7 +62,7 @@ public class DockerService : IDockerService
             actionsImporterArguments.Add($"-e GROUP_ID={groupId.TrimEnd()}");
         }
         actionsImporterArguments.Add($"-v \"{Directory.GetCurrentDirectory()}\":/data");
-        actionsImporterArguments.Add($"{server}/{image}:{version}");
+        actionsImporterArguments.Add(fullImageName);
         actionsImporterArguments.AddRange(arguments);
 
         await _processService.RunAsync(
@@ -64,9 +75,15 @@ public class DockerService : IDockerService
 
     public async Task<List<Feature>> GetFeaturesAsync(string image, string server, string version)
     {
+        var fullImageName = $"{server}/{image}:{version}";
+        return await GetFeaturesAsync(fullImageName);
+    }
+
+    public async Task<List<Feature>> GetFeaturesAsync(string fullImageName)
+    {
         var actionsImporterArguments = new List<string> { "run --rm -t" };
         actionsImporterArguments.AddRange(GetEnvironmentVariableArguments());
-        actionsImporterArguments.Add($"{server}/{image}:{version}");
+        actionsImporterArguments.Add(fullImageName);
         actionsImporterArguments.AddRange(new[] { "list-features", "--json" });
 
         var (standardOutput, _, _) = await _processService.RunAndCaptureAsync("docker", string.Join(' ', actionsImporterArguments), throwOnError: false);
@@ -103,25 +120,36 @@ public class DockerService : IDockerService
     public async Task VerifyImagePresentAsync(string image, string server, string version, bool isPrerelease)
     {
         var imageName = $"{server}/{image}:{version}";
+        await VerifyImagePresentAsync(imageName, isPrerelease);
+    }
+
+    public async Task VerifyImagePresentAsync(string fullImageName, bool isPrerelease)
+    {
         var preReleaseOption = isPrerelease ? " --prerelease" : string.Empty;
         try
         {
             await _processService.RunAsync(
                 "docker",
-                $"image inspect {server}/{image}:{version}",
+                $"image inspect {fullImageName}",
                 output: false
             );
         }
 
         catch (Exception)
         {
-            throw new Exception($"Unable to locate {imageName} image locally. Please run `gh actions-importer update{preReleaseOption}` to fetch the latest image prior to running this command.");
+            throw new Exception($"Unable to locate {fullImageName} image locally. Please run `gh actions-importer update{preReleaseOption}` to fetch the latest image prior to running this command.");
         }
     }
 
     public async Task<string?> GetLatestImageDigestAsync(string image, string server)
     {
-        var (standardOutput, _, _) = await _processService.RunAndCaptureAsync("docker", $"manifest inspect {server}/{image}");
+        var fullImageName = $"{server}/{image}";
+        return await GetLatestImageDigestAsync(fullImageName);
+    }
+
+    public async Task<string?> GetLatestImageDigestAsync(string fullImageName)
+    {
+        var (standardOutput, _, _) = await _processService.RunAndCaptureAsync("docker", $"manifest inspect {fullImageName}");
         Manifest? manifest = JsonSerializer.Deserialize<Manifest>(standardOutput);
 
         return manifest?.GetDigest();
@@ -129,7 +157,13 @@ public class DockerService : IDockerService
 
     public async Task<string?> GetCurrentImageDigestAsync(string image, string server)
     {
-        var (standardOutput, _, _) = await _processService.RunAndCaptureAsync("docker", $"image inspect --format={{{{.Id}}}} {server}/{image}");
+        var fullImageName = $"{server}/{image}";
+        return await GetCurrentImageDigestAsync(fullImageName);
+    }
+
+    public async Task<string?> GetCurrentImageDigestAsync(string fullImageName)
+    {
+        var (standardOutput, _, _) = await _processService.RunAndCaptureAsync("docker", $"image inspect --format={{{{.Id}}}} {fullImageName}");
 
         return standardOutput.Split(":").ElementAtOrDefault(1)?.Trim();
     }
@@ -157,20 +191,26 @@ public class DockerService : IDockerService
 
     private async Task DockerPullAsync(string image, string server, string version)
     {
-        Console.WriteLine($"Updating {server}/{image}:{version}...");
+        var fullImageName = $"{server}/{image}:{version}";
+        await DockerPullAsync(fullImageName);
+    }
+
+    private async Task DockerPullAsync(string fullImageName)
+    {
+        Console.WriteLine($"Updating {fullImageName}...");
         var (_, standardError, exitCode) = await _processService.RunAndCaptureAsync(
             "docker",
-            $"pull {server}/{image}:{version} --quiet",
+            $"pull {fullImageName} --quiet",
             throwOnError: false
         );
 
         if (exitCode != 0)
         {
             string message = standardError.Trim();
-            string errorMessage = $"There was an error pulling the {server}/{image}:{version}.\nError: {message}";
+            string errorMessage = $"There was an error pulling the {fullImageName}.\nError: {message}";
 
             throw new Exception(errorMessage);
         }
-        Console.WriteLine($"{server}/{image}:{version} up-to-date");
+        Console.WriteLine($"{fullImageName} up-to-date");
     }
 }

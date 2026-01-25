@@ -1,0 +1,11 @@
+.git
+.github
+.devcontainer
+.vscode
+.licenses
+docs
+dist
+src/ActionsImporter.UnitTests
+src/ActionsImporter.ThirdPartyLicenseGenerator
+**/bin
+**/obj

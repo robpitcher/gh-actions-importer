@@ -5,7 +5,7 @@ on:
     tags: ["v*"]
 
 env:
-  DOTNET_VERSION: "6.0.x"
+  DOTNET_VERSION: "9.0.x"
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -18,12 +18,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: install dotnet-format
-        run: dotnet tool install -g dotnet-format --version 5.1.225507
       - name: lint
         working-directory: src
         run: dotnet format ActionsImporter.sln --verify-no-changes
@@ -34,8 +32,8 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: dotnet restore
@@ -54,8 +52,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: dotnet restore
@@ -64,12 +62,12 @@ jobs:
         run: dotnet build src/ActionsImporter.sln
       - name: Validate licenses
         run: |
-          dotnet tool install --global ThirdLicense --version 1.2.0
+          dotnet tool install --global ThirdLicense --version 1.4.0
           thirdlicense --project src/ActionsImporter.sln --output .licenses/new-licenses.txt
           diff -u .licenses/new-licenses.txt .licenses/licenses.txt
       - name: dotnet publish
         run: |
-          dotnet publish src/ActionsImporter/ActionsImporter.csproj -c Release -r win10-x64 --self-contained -o dist/win-x64 --no-restore -p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+          dotnet publish src/ActionsImporter/ActionsImporter.csproj -c Release -r win-x64 --self-contained -o dist/win-x64 --no-restore -p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
           dotnet publish src/ActionsImporter/ActionsImporter.csproj -c Release -r osx-x64 --self-contained -o dist/osx-x64 --no-restore -p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
           dotnet publish src/ActionsImporter/ActionsImporter.csproj -c Release -r osx-arm64 --self-contained -o dist/osx-arm64 --no-restore -p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
           dotnet publish src/ActionsImporter/ActionsImporter.csproj -c Release -r linux-x64 --self-contained -o dist/linux-x64 --no-restore -p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
@@ -95,7 +93,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     environment: create_release
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: validate tag on main

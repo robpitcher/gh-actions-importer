@@ -50,19 +50,9 @@ public class App
     {
         await _dockerService.VerifyDockerRunningAsync().ConfigureAwait(false);
 
-        // If using custom image via env var, pull that; otherwise use default logic
-        if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
-        {
-            await _dockerService.UpdateImageAsync(customImage);
-        }
-        else
-        {
-            await _dockerService.UpdateImageAsync(
-                ActionsImporterImage,
-                ActionsImporterContainerRegistry,
-                ImageTag
-            );
-        }
+        // Use custom image if specified, otherwise construct from registry/image/tag
+        var fullImageName = GetFullImageName();
+        await _dockerService.UpdateImageAsync(fullImageName);
 
         return 0;
     }
@@ -71,33 +61,15 @@ public class App
     {
         await _dockerService.VerifyDockerRunningAsync().ConfigureAwait(false);
 
-        // If using custom image via env var, verify and execute with that; otherwise use default logic
-        if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
-        {
-            await _dockerService.VerifyImagePresentAsync(customImage, IsPrerelease).ConfigureAwait(false);
-            await _dockerService.ExecuteCommandAsync(
-                customImage,
-                NoHostNetwork,
-                args.Select(x => x.EscapeIfNeeded()).ToArray()
-            );
-        }
-        else
-        {
-            await _dockerService.VerifyImagePresentAsync(
-                ActionsImporterImage,
-                ActionsImporterContainerRegistry,
-                ImageTag,
-                IsPrerelease
-            ).ConfigureAwait(false);
+        // Use custom image if specified, otherwise construct from registry/image/tag
+        var fullImageName = GetFullImageName();
+        await _dockerService.VerifyImagePresentAsync(fullImageName, IsPrerelease).ConfigureAwait(false);
+        await _dockerService.ExecuteCommandAsync(
+            fullImageName,
+            NoHostNetwork,
+            args.Select(x => x.EscapeIfNeeded()).ToArray()
+        );
 
-            await _dockerService.ExecuteCommandAsync(
-                ActionsImporterImage,
-                ActionsImporterContainerRegistry,
-                ImageTag,
-                NoHostNetwork,
-                args.Select(x => x.EscapeIfNeeded()).ToArray()
-            );
-        }
         return 0;
     }
 
@@ -153,16 +125,9 @@ public class App
         {
             await _dockerService.VerifyDockerRunningAsync().ConfigureAwait(false);
 
-            // If using custom image via env var, get features from that; otherwise use default logic
-            List<Feature> availableFeatures;
-            if (_environmentVariables.TryGetValue(CliImageEnvironmentVariable, out var customImage) && !string.IsNullOrWhiteSpace(customImage))
-            {
-                availableFeatures = await _dockerService.GetFeaturesAsync(customImage).ConfigureAwait(false);
-            }
-            else
-            {
-                availableFeatures = await _dockerService.GetFeaturesAsync(ActionsImporterImage, ActionsImporterContainerRegistry, ImageTag).ConfigureAwait(false);
-            }
+            // Use custom image if specified, otherwise construct from registry/image/tag
+            var fullImageName = GetFullImageName();
+            var availableFeatures = await _dockerService.GetFeaturesAsync(fullImageName).ConfigureAwait(false);
 
             try
             {

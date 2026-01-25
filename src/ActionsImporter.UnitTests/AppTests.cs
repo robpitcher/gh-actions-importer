@@ -115,7 +115,7 @@ public class AppTests
         // Arrange
         _dockerService.Setup(handler => handler.VerifyDockerRunningAsync()).Returns(Task.CompletedTask);
         _dockerService.Setup(handler =>
-            handler.UpdateImageAsync("actions-importer/cli", "ghcr.io", "latest")
+            handler.UpdateImageAsync("ghcr.io/actions-importer/cli:latest")
         ).Returns(Task.CompletedTask);
 
         // Act

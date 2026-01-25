@@ -119,8 +119,8 @@ public class DockerService : IDockerService
 
     public async Task VerifyImagePresentAsync(string image, string server, string version, bool isPrerelease)
     {
-        var imageName = $"{server}/{image}:{version}";
-        await VerifyImagePresentAsync(imageName, isPrerelease);
+        var fullImageName = $"{server}/{image}:{version}";
+        await VerifyImagePresentAsync(fullImageName, isPrerelease);
     }
 
     public async Task VerifyImagePresentAsync(string fullImageName, bool isPrerelease)

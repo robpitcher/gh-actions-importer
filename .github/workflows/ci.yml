@@ -18,12 +18,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: install dotnet-format
-        run: dotnet tool install -g dotnet-format --version 5.1.225507
       - name: lint
         working-directory: src
         run: dotnet format ActionsImporter.sln --verify-no-changes
@@ -34,8 +32,8 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: dotnet restore
@@ -54,8 +52,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: dotnet restore
@@ -95,7 +93,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     environment: create_release
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: validate tag on main

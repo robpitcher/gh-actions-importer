@@ -80,8 +80,13 @@ jobs:
 
       - name: Smoke test image
         run: |
-          image_ref="$(printf '%s\n' "${{ steps.meta.outputs.tags }}" | head -n 1)"
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            image_ref="ghcr.io/robpitcher/actions-importer/cli:latest"
+          else
+            image_ref="ghcr.io/robpitcher/actions-importer/cli:${{ github.ref_name }}"
+          fi
           if [ -z "$image_ref" ]; then
+            echo "Available tags: ${{ steps.meta.outputs.tags }}"
             echo "No image tag available for smoke test."
             exit 1
           fi

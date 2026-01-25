@@ -8,5 +8,7 @@ RUN dotnet publish src/ActionsImporter/ActionsImporter.csproj -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/runtime:9.0
 WORKDIR /app
-COPY --from=build /app/publish .
+RUN addgroup --system --gid 1000 appuser && adduser --system --uid 1000 --gid 1000 appuser
+COPY --from=build --chown=appuser:appuser /app/publish .
+USER appuser
 ENTRYPOINT ["dotnet", "gh-actions-importer.dll"]

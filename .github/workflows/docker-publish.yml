@@ -12,7 +12,6 @@ permissions:
 
 env:
   DOTNET_VERSION: "9.0.x"
-  IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'latest' || github.ref_name }}
 
 concurrency:
   group: docker-publish-${{ github.ref }}
@@ -81,7 +80,11 @@ jobs:
 
       - name: Smoke test image
         run: |
-          image_ref="ghcr.io/robpitcher/actions-importer/cli:${{ env.IMAGE_TAG }}"
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            image_ref="ghcr.io/robpitcher/actions-importer/cli:latest"
+          else
+            image_ref="ghcr.io/robpitcher/actions-importer/cli:${{ github.ref_name }}"
+          fi
           echo "Smoke testing $image_ref"
           docker pull "$image_ref"
           docker run --rm "$image_ref" --help

@@ -20,11 +20,11 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-- uses: actions/checkout@v3.5.0
-- uses: google-github-actions/auth@v1.1.1
+- uses: actions/checkout@v4
+- uses: google-github-actions/auth@v2
   with:
     credentials_json: ${{ env.KEY_FILE }}
-- uses: google-github-actions/setup-gcloud@v1.1.1
+- uses: google-github-actions/setup-gcloud@v3
   with:
     project_id: my-project
 - run: gcloud app --quiet deploy app-1.yaml app-2.yaml --version=alpha --bucket gs://my-bucket --image-url gcr.io/my/image --logging=debug --promote --stop-previous-version

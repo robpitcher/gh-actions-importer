@@ -20,13 +20,13 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-- uses: google-github-actions/auth@v1.1.1
+- uses: google-github-actions/auth@v2
   with:
     credentials_json: ${{ env.KEY_FILE }}
-- uses: google-github-actions/setup-gcloud@v1.1.1
+- uses: google-github-actions/setup-gcloud@v3
   with:
     project_id: my-project
-- uses: google-github-actions/upload-cloud-storage@v1.0.3
+- uses: google-github-actions/upload-cloud-storage@v3
   with:
     path: "."
     destination: my-bucket

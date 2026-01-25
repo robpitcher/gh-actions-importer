@@ -13,7 +13,7 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
- uses: AkhileshNS/heroku-deploy@v3.12.14
+ uses: AkhileshNS/heroku-deploy@v3
  with:
    heroku_api_key: "${{ secret.HEROKU_API_KEY }}"
    heroku_app_name: <app_name>

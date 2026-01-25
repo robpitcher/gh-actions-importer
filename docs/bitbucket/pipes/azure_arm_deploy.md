@@ -23,18 +23,18 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: azure/login@v1.4.6
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 - name: Create Azure Resource Group
-  uses: azure/cli@v1.0.7
+  uses: azure/cli@v2
   with:
     inlineScript: |
       #!/bin/bash
       az group create --name "my-resource-group" --location "CentralUS"
       echo "Azure resource group created"
 - name: Deploy Azure ARM Template
-  uses: azure/arm-deploy@v1.0.9
+  uses: azure/arm-deploy@v2
   with:
     scope: resourcegroup
     deploymentName: my-deployment

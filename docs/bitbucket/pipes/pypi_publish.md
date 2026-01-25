@@ -16,11 +16,11 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: actions/setup-python@v4.7.0
+- uses: actions/setup-python@v5
 - name: Build Distributions
   run: python setup.py bdist_wheel
   working-directory: myfolder
-- uses: pypa/gh-action-pypi-publish@v1.8.10
+- uses: pypa/gh-action-pypi-publish@release/v1
   with:
     user: "${{ secrets.PYPI_USERNAME }}"
     password: "${{ secrets.PYPI_PASSWORD }}"

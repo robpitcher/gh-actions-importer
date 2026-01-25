@@ -14,7 +14,7 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-uses: actions/upload-artifact@v3.1.1
+uses: actions/upload-artifact@v4
 with:
   path: "*.html"
 ```

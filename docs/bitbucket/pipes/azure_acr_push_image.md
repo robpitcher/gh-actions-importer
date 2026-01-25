@@ -16,7 +16,7 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: azure/docker-login@v1.0.1
+- uses: azure/docker-login@v2
   with:
     username: "$AZURE_TOKEN_NAME"
     password: "$AZURE_TOKEN_PWD"

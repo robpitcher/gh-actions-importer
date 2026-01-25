@@ -17,7 +17,7 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-uses: Burnett01/rsync-deployments@6.0.0
+uses: Burnett01/rsync-deployments@v8
 with:
   switches: "-rp --delete"
   remote_host: 127.0.0.1

@@ -39,7 +39,6 @@ jobs:
           images: ghcr.io/robpitcher/actions-importer/cli
           tags: |
             type=ref,event=tag
-            type=raw,value=${{ github.event.release.tag_name }},enable=${{ github.event_name == 'release' }}
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push

@@ -18,7 +18,7 @@ variables:
 ## Transformed GitHub Action
 ```yaml
 - name: Install SSH key
-  uses: shimataro/ssh-key-action@v2.5.0
+  uses: shimataro/ssh-key-action@v2
   with:
     key: "${{ secrets.SFTP_DEPLOY_SSH_KEY }}"
     name: id_rsa

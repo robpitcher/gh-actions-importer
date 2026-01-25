@@ -39,12 +39,12 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-- uses: aws-actions/configure-aws-credentials@v2.2.0
+- uses: aws-actions/configure-aws-credentials@v5
   with:
     aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
     aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
     aws-region: "${{ secrets.AWS_DEFAULT_REGION }}"
-- uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+- uses: aws-actions/aws-cloudformation-github-deploy@v1
   with:
     name: my-stack-name
     template: https://s3.amazonaws.com/cfn-deploy-pipe/cfn-template.json

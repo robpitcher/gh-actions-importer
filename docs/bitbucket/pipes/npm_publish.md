@@ -16,7 +16,7 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: actions/setup-node@v3.7.0
+- uses: actions/setup-node@v6
   with:
     registry-url: foo
 - run: npm publish my/dist --tag 1.2.3 --dry-run

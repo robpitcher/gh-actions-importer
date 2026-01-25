@@ -18,7 +18,7 @@ variables:
 - name: Execute pre-execution script
   shell: sh
   run: "./run-first.sh"
-- uses: serverless/github-action@v3.2.0
+- uses: serverless/github-action@v4
   env:
     AWS_ACCESS_KEY_ID: my-access-key
     AWS_SECRET_ACCESS_KEY: "${{ env.AWS_SECRET_SERVERLESS_DEPLOY_KEY }}"

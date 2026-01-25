@@ -17,7 +17,7 @@
 
 ```yaml
 - uses: aws-actions/setup-sam@v2
-- uses: aws-actions/configure-aws-credentials@v3.0.1
+- uses: aws-actions/configure-aws-credentials@v5
   with:
     aws-access-key-id: "${{ env.AWS_ACCESS_KEY_ID }}"
     aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"

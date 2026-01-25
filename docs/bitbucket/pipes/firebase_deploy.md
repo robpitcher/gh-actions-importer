@@ -16,7 +16,7 @@ pipe: atlassian/firebase-deploy:4.1.0
 
 ## Transformed GitHub Action
 ```yaml
-uses: FirebaseExtended/action-hosting-deploy@v0.7.1
+uses: FirebaseExtended/action-hosting-deploy@v0
 with:
   repoToken: "${{ secrets.GITHUB_TOKEN }}"
   firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"

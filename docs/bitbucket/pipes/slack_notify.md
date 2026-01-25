@@ -20,13 +20,13 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: slackapi/slack-github-action@v1.24.0
+- uses: slackapi/slack-github-action@v2
   env:
     SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK_URL }}"
     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
   with:
     payload-file-path: payload.json
-- uses: slackapi/slack-github-action@v1.24.0
+- uses: slackapi/slack-github-action@v2
   env:
     SLACK_WEBHOOK_URL: "${{ secrets.SLACK_WEBHOOK_URL }}"
     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

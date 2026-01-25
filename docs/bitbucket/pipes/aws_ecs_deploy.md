@@ -17,18 +17,18 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-- uses: aws-actions/configure-aws-credentials@v3.0.1
+- uses: aws-actions/configure-aws-credentials@v5
   with:
     aws-access-key-id: "${{ env.AWS_ACCESS_KEY_ID }}"
     aws-secret-access-key: "${{ env.AWS_SECRET_ACCESS_KEY }}"
     aws-region: us-east-1
 - id: render-task-definition-my-ecs-service-my-ecs-cluster
-  uses: aws-actions/amazon-ecs-render-task-definition@v1.1.3
+  uses: aws-actions/amazon-ecs-render-task-definition@v1
   with:
     task-definition: task-definition.json
     container-name: UPDATE_ME
     image: UPDATE_ME
-- uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.11
+- uses: aws-actions/amazon-ecs-deploy-task-definition@v2
   with:
     task-definition: "${{ steps.render-task-definition-my-ecs-service-my-ecs-cluster.outputs.task-definition }}"
     service: my-ecs-service

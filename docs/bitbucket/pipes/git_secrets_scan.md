@@ -14,7 +14,7 @@ variables:
 
 ## Transformed GitHub Action
 ```yaml
-uses: actions/checkout@v3.5.0
+uses: actions/checkout@v4
 with:
   path: git-secrets
   repository: awslabs/git-secrets

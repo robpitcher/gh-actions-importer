@@ -16,10 +16,10 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: azure/login@v1.4.6
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
-- uses: azure/functions-action@v1.5.0
+- uses: azure/functions-action@v1
   with:
     app-name: my-function
     package: application.zip

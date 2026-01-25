@@ -18,7 +18,7 @@
 
 ## Transformed GitHub Action
 ```yaml
-- uses: aws-actions/configure-aws-credentials@v3.0.1
+- uses: aws-actions/configure-aws-credentials@v5
   with:
     aws-access-key-id: "$AWS_ACCESS_KEY_ID"
     aws-secret-access-key: "$AWS_SECRET_ACCESS_KEY"

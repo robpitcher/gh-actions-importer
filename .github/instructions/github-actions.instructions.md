@@ -230,7 +230,7 @@ jobs:
     path: |
       ~/.npm
       ./node_modules # For monorepos, cache specific project node_modules
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-
       ${{ runner.os }}-node-

@@ -80,9 +80,10 @@ jobs:
 
       - name: Smoke test image
         run: |
-          image_tag="${{ steps.meta.outputs.version }}"
-          if [ -z "$image_tag" ]; then
-            image_tag="latest"
+          image_ref="$(printf '%s\n' "${{ steps.meta.outputs.tags }}" | head -n 1)"
+          if [ -z "$image_ref" ]; then
+            echo "No image tag available for smoke test."
+            exit 1
           fi
-          docker pull ghcr.io/robpitcher/actions-importer/cli:$image_tag
-          docker run --rm ghcr.io/robpitcher/actions-importer/cli:$image_tag --help
+          docker pull "$image_ref"
+          docker run --rm "$image_ref" --help

@@ -21,11 +21,11 @@
 ## Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
     enable-AzPSSession: true
-- uses: azure/powershell@v1
+- uses: azure/powershell@v2
   with:
     azPSVersion: latest
     inlineScript: |-

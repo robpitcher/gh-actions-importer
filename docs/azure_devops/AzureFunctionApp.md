@@ -23,10 +23,10 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
-- uses: Azure/functions-action@v1
+- uses: azure/functions-action@v1
   with:
     app-name: valet-app
     package: package-path/

@@ -16,7 +16,7 @@
 
 ```yaml
 - name: Generate Coverage Report
-  uses: danielpalme/ReportGenerator-GitHub-Action@4.8.12
+  uses: danielpalme/ReportGenerator-GitHub-Action@5
   with:
     reports: "${{ github.workspace }}/**/*coverage.xml"
     sourcedirs: "${{ github.workspace }}/src/"
@@ -24,12 +24,12 @@
     reporttypes: HtmlInline
   continue-on-error: false
 - name: Upload CoverageReport
-  uses: actions/upload-artifact@v2
+  uses: actions/upload-artifact@v6
   with:
     name: CoverageReport
     path: coveragereport_${{ github.run_number }}
 - name: Upload CoverageReportFiles
-  uses: actions/upload-artifact@v2
+  uses: actions/upload-artifact@v6
   with:
     name: CoverageReportFiles
     path: "${{ github.workspace }}/**/results.xml"

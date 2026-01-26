@@ -17,7 +17,7 @@
 
 ```yaml
 - name: Sample Deploy
-  uses: cschleiden/webdeploy-action@v1.1.0
+  uses: cschleiden/webdeploy-action@v1
   with:
     webSiteName: Sample-Website
     package: "${{ github.workspace }}\\**\\*.zip"

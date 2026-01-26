@@ -14,7 +14,7 @@ steps:
 ## Transformed Github Action
 
 ```yaml
-- uses: microsoft/action-publish-symbols@v1
+- uses: microsoft/action-publish-symbols@v2
   timeout-minutes: 12
   with:
     accountName: "${{ env.AZ_ACCOUNT_NAME }}"

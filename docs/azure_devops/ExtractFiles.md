@@ -17,7 +17,7 @@
 ```yaml
 - run: npm i @actions/exec
 - name: Extract Files
-  uses: actions/github-script@v6.4.0
+  uses: actions/github-script@v8
   env:
     DESTINATION_FOLDER: base_folder
     ARCHIVE_FILE_PATTERNS: "**/*.zip"

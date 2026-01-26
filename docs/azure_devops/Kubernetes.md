@@ -19,12 +19,12 @@
 ## Transformed Github Action
 
 ```yaml
-- uses: azure/aks-set-context@v1
+- uses: azure/aks-set-context@v4
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
     resource-group: myResourceGroup
     cluster-name: myAKSCluster
-- uses: azure/k8s-create-secret@v1
+- uses: azure/k8s-create-secret@v5
   with:
     secret-type: generic
     arguments: "--from-literal=password=1234"

@@ -18,13 +18,13 @@
 ## Transformed Github Action
 
 ```yaml
-- uses: azure/setup-helm@v3.5
-      with:
-        version: v3.7.0
-- uses: azure/setup-helm@v3.5
+- uses: azure/setup-helm@v4
+  with:
+    version: v3.7.0
+- uses: azure/setup-helm@v4
   with:
     version: v2.14.1
-- uses: azure/setup-kubectl@v1
+- uses: azure/setup-kubectl@v4
   with:
     version: v1.9.0
 ```

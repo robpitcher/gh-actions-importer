@@ -58,12 +58,12 @@
 ```yaml
 - name: 'Azure PowerShell script: Inline Script Version'
   continue-on-error: true
-  uses: Azure/login@v1
+  uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 - name: 'Azure PowerShell script: Inline Script Version'
   continue-on-error: true
-  uses: azure/powershell@v1
+  uses: azure/powershell@v2
   with:
     inlineScript: |-
       cd williamh
@@ -79,12 +79,12 @@
 ```yaml
 - name: 'Azure PowerShell script: ScriptPath Version'
   continue-on-error: true
-  uses: Azure/login@v1
+  uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 - name: 'Azure PowerShell script: ScriptPath Version'
   continue-on-error: true
-  uses: azure/powershell@v1
+  uses: azure/powershell@v2
   with:
     inlineScript: |-
       cd williamh
@@ -99,12 +99,12 @@
 ```yaml
 - name: 'Azure PowerShell script: ScriptPath Version'
   continue-on-error: true
-  uses: Azure/login@v1
+  uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 - name: 'Azure PowerShell script: ScriptPath Version'
   continue-on-error: true
-  uses: azure/powershell@v1
+  uses: azure/powershell@v2
   with:
     inlineScript: williamh/AzurePowerShell_Task_TestScript.ps1 -Title "Test Header"
     errorActionPreference: Stop

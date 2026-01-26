@@ -22,7 +22,7 @@
 ```yaml
     # The following script preserves the globbing behavior of the CopyFiles task.
     # Refer to this transformer's documentation for an alternative that will work in simple cases.
-    - uses: actions/github-script@v6.4.0
+    - uses: actions/github-script@v8
       env:
         TARGET_FOLDER: dest
       with:

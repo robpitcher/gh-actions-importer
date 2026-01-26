@@ -18,12 +18,12 @@
 ## Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 # if 'Allow Azure Services and resources to access this server' is ON the Azure/login step above can likely be removed
 - name: Azure SQL Deploy
-  uses: Azure/sql-action@v2
+  uses: azure/sql-action@v2
   with:
     connection-string: "${{ secrets.AZURE_SQL_CONNECTION_STRING }}"
     path: AwesomeCompany.dacpac

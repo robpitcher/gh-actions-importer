@@ -38,10 +38,10 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
-- uses: Azure/webapps-deploy@v2
+- uses: azure/webapps-deploy@v3
   with:
     app-name: win-app-service-name
     package: package/path
@@ -56,11 +56,11 @@
 ```
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 # The Azure Function App does not accept glob patterns. Consider updating the package path.
-- uses: Azure/functions-action@v1
+- uses: azure/functions-action@v1
   with:
     app-name: func-app-linux-app-service
     package: "$(System.DefaultWorkingDirectory)/**/*.zip"

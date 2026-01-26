@@ -19,10 +19,10 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
-- uses: azure/functions-container-action@v1.2.0
+- uses: azure/functions-container-action@v1
   with:
     app-name: valet-container-app
     image: valetRegistry.azurecr.io/nginx:latest

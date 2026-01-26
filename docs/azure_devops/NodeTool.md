@@ -15,7 +15,7 @@
 ### Transformed Github Action
 
 ```yaml
-  - uses: actions/setup-node@v2
+  - uses: actions/setup-node@v6
     with:
       node-version: 10.x
       architecture: x86

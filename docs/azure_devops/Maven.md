@@ -53,7 +53,7 @@ steps:
 
 ```yaml
 name: Set up JDK
-uses: actions/setup-java@v3.10.0
+uses: actions/setup-java@v5
 with:
   java_version: '1.8'
   architecture: x86

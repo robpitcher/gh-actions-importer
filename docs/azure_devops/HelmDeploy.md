@@ -17,7 +17,7 @@
 ## Transformed Github Action
 
 ```yaml
-- uses: azure/aks-set-context@v1
+- uses: azure/aks-set-context@v4
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
     resource-group: myResourceGroup

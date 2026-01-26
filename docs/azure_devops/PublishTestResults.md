@@ -20,7 +20,7 @@
 ```yaml
 # JUnit
 - name: Publish XUnit test results
-  uses: EnricoMi/publish-unit-test-result-action@v2.4.1
+  uses: EnricoMi/publish-unit-test-result-action@v2
   if: always()
   with:
     comment_title: XUnit Title
@@ -30,7 +30,7 @@
 ```yaml
 # XUnit, NUnit
 - name: Publish XUnit test results
-  uses: dorny/test-reporter@v1.6.0
+  uses: dorny/test-reporter@v2
   if: success() || failure()
   with:
     name: XUnit Title

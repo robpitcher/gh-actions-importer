@@ -16,7 +16,7 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: nuget/setup-nuget@v1.1.1
+- uses: nuget/setup-nuget@v2
   with:
     nuget-version: '4.3.0'
 ```

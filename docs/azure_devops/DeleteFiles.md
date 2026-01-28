@@ -17,7 +17,7 @@
 
 ```yaml
 - name: Delete files
-  uses: actions/github-script@v6.4.0
+  uses: actions/github-script@v8
   env:
     REMOVE_SOURCE_FOLDER: false
     SOURCE_FOLDER: "."

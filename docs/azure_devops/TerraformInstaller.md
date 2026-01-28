@@ -14,7 +14,7 @@ steps:
 
 ```yaml
 - name: 'Terraform : azurerm'
-  uses: hashicorp/setup-terraform@v2
+  uses: hashicorp/setup-terraform@v3
 ```
 
 ## Unsupported Inputs and Aliases

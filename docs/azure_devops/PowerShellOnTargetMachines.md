@@ -36,16 +36,16 @@ jobs:
     name: Agent job 1
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
     - name: Run PowerShell on ${{ env.machineNames }}
       continue-on-error: true
-      uses: Azure/login@v1
+      uses: azure/login@v2
       with:
         creds: "${{ secrets.AZURE_CREDENTIALS }}"
         enable-AzPSSession: true
     - name: Run PowerShell on ${{ env.machineNames }}
       continue-on-error: true
-      uses: azure/powershell@v1
+      uses: azure/powershell@v2
       env:
         ACCOUNT_NAME: admin
         MACHINE_NAMES: vm1.westus.cloudapp.azure.com:5986

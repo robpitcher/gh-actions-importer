@@ -14,7 +14,7 @@
 ### Transformed Github Action
 
 ```yaml
-  uses: ruby/setup-ruby@v1.138.0
+  uses: ruby/setup-ruby@v1
   with:
     ruby-version: '3.7'
 ```

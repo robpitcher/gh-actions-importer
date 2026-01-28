@@ -27,7 +27,7 @@
 
 ```yaml
 - name: Install Java Version 8
-  uses: actions/setup-java@v3.10.0
+  uses: actions/setup-java@v5
   with:
     distribution: zulu
     java-version: '8'

@@ -16,7 +16,7 @@ task: CopyPublishBuildArtifacts@1
 ```yaml
     # The following script preserves the globbing behavior of the CopyFiles task.
     - name: 'Copy Publish Artifact: SampleAzureFunction'
-      uses: actions/github-script@v6.4.0
+      uses: actions/github-script@v8
       env:
         TARGET_FOLDER: ${{ runner.temp }}/${{ github.run_id }}_publishartifact
         SOURCE_FOLDER: SampleAzureFunction
@@ -40,7 +40,7 @@ task: CopyPublishBuildArtifacts@1
             await io.cp(file, dest, options)
           }
     - name: 'Copy Publish Artifact: SampleAzureFunction'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v6
       with:
         name: SampleAzureFunction
         path: "${{ runner.temp }}/${{ github.run_id }}_publishartifact"

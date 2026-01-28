@@ -18,7 +18,7 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: actions/upload-artifact@v2
+- uses: actions/upload-artifact@v6
   with:
     name: drop
     path: artifact.zip

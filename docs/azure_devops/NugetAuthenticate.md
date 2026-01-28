@@ -13,7 +13,7 @@
 
 ```yaml
 - name: NuGet Authenticate
-  uses: actions/setup-dotnet@v3.0.3
+  uses: actions/setup-dotnet@v5
   env:
     NUGET_AUTH_TOKEN: "${{ secrets.NUGET_AUTH_TOKEN }}"
     NUGET_FEED_URL: "${{ env.NUGET_FEED_URL }}"

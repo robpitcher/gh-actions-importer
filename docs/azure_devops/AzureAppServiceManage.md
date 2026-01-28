@@ -29,10 +29,10 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
-- uses: azure/cli@v1.0.7
+- uses: azure/cli@v2
   with:
   # Action - Start & Stop
     inlineScript: az webapp start --name "web-app" --resource-group "app-resource-group" --subscription "Azure Subscription"

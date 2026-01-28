@@ -20,10 +20,10 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: Azure/login@v1
+- uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
-- uses: azure/webapps-deploy@v2
+- uses: azure/webapps-deploy@v3
   with:
     app-name: container-web-app
     image-name: myregistry.azurecr.io/nginx:latest

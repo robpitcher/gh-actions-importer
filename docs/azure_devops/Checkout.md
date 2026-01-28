@@ -15,7 +15,7 @@
 ### Transformed Github Action
 
 ```yaml
-- uses: actions/checkout@v2
+- uses: actions/checkout@v6
   with:
     repository: repository name
     token: "${{ secrets.CHECKOUT_TOKEN }}"

@@ -29,7 +29,7 @@
 
 ```yaml
 - name: Set up JDK 1.8
-  uses: actions/setup-java@v3.10.0
+  uses: actions/setup-java@v5
   with:
     java-version: '1.8'
 - name: Run gradle
@@ -41,7 +41,7 @@
     GRADLE_OPTS: -Xmx1024m
 
 - name: Publish test results
-  uses: EnricoMi/publish-unit-test-result-action@v2.4.1
+  uses: EnricoMi/publish-unit-test-result-action@v2
   if: always()
   with:
     comment_title: Test Run Title

@@ -28,13 +28,13 @@
 
 ```yaml
 - name: install msbuild
-  uses: microsoft/setup-msbuild@v1.3.1
+  uses: microsoft/setup-msbuild@v2
 - name: run msbuild
   shell: cmd
   run: msbuild solution/*.sln -t:Clean -p:First=value;NewProperty=TestResult;Configuration=Release;Platform="x86";RestorePackagesConfig=true -maxCpuCount -v:minimal -fileLogger
 
 - name: install msbuild
-  uses: microsoft/setup-msbuild@v1.3.1
+  uses: microsoft/setup-msbuild@v2
   with:
     vswhere-path: path/to/msbuild
 - name: run msbuild

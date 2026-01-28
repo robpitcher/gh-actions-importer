@@ -22,7 +22,7 @@
 ## Transformed Github Action
 
 ```yaml
-  uses: microsoft/vstest-action@v1.0.0
+  uses: microsoft/vstest-action@v1
   with:
     testAssembly: "**\\\\*test*.dll"
     searchFolder: path/to/tests

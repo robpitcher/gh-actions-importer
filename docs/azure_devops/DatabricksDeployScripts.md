@@ -15,9 +15,9 @@
 
 ```yaml
 - name: Install Databricks CLI
-  uses: microsoft/install-databricks-cli@v1.0.0
+  uses: microsoft/install-databricks-cli@v1
 - name: Databricks Notebooks deployment
-  uses: microsoft/databricks-import-notebook@v1.0.0
+  uses: microsoft/databricks-import-notebook@v1
   with:
     databricks-host: https://westus2.azuredatabricks.net
     databricks-token: "${{ secrets.DATABRICKS_TOKEN }}"

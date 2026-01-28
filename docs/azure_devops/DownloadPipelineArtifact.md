@@ -40,7 +40,7 @@ steps:
 ### Transformed Github Action
 
 ```yaml
-- uses: actions/download-artifact@v2
+- uses: actions/download-artifact@v7
   with:
     name: drop
     path: out

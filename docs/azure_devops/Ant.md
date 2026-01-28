@@ -22,14 +22,14 @@
 
 ```yaml
 - name: Set up JDK 1.11
-  uses: actions/setup-java@v3.10.0
+  uses: actions/setup-java@v5
   with:
     java-version: '1.11'
 - run: ant -DmyProperty=myPropertyValue -buildfile build.xml build-test
   env:
     ANT_HOME: ANT_HOME_DIR
 - name: Publish test results
-  uses: EnricoMi/publish-unit-test-result-action@v2.4.1
+  uses: EnricoMi/publish-unit-test-result-action@v2
   if: always()
   with:
     comment_title: Test Run Title
@@ -39,7 +39,7 @@
 ```yaml
 # publishJUnitResults: false
 - name: Set up JDK 1.11
-  uses: actions/setup-java@v3.10.0
+  uses: actions/setup-java@v5
   with:
     java-version: '1.11'
 - run: ant -DmyProperty=myPropertyValue -buildfile build.xml build-test

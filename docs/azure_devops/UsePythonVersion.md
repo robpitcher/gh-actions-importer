@@ -16,7 +16,7 @@
 
 ```yaml
 - name: Setup Python 3.7
-  uses: actions/setup-python@v1
+  uses: actions/setup-python@v6
   with:
     python-version: '3.7'
     architecture: x64

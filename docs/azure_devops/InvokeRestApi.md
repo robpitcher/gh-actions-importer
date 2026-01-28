@@ -17,7 +17,7 @@
 
 ```yaml
 - name: 'Invoke REST API: GET'
-  uses: Azure/login@v1
+  uses: azure/login@v2
   with:
     creds: "${{ secrets.AZURE_CREDENTIALS }}"
 - name: 'Invoke REST API: GET'

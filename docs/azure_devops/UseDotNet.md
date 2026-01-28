@@ -17,7 +17,7 @@
 
 ```yaml
   - name: Use .NET Core sdk
-    uses: actions/setup-dotnet@v3.0.3
+    uses: actions/setup-dotnet@v5
     with:
       dotnet-version: 2.2.203
 ```

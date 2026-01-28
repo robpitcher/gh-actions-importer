@@ -32,7 +32,7 @@ env:
 
 jobs:
   __default-Job:
-  - uses: docker/login-action@v2.1.0
+  - uses: docker/login-action@v3
     with:
       registry: "${{ env.GITHUBCONTAINERREGISTRY_DOCKER_REGISTRY }}"
       username: "${{ env.GITHUBCONTAINERREGISTRY_DOCKER_USERNAME }}"
@@ -210,7 +210,7 @@ V2
 #### Transformed Github Action for build and push
 
 ```yaml
-- uses: docker/login-action@v2.1.0
+- uses: docker/login-action@v3
   with:
     username: "${{ env.DUMMY_DOCKER_HUB_DOCKER_USERNAME }}"
     password: "${{ secrets.DUMMY_DOCKER_HUB_DOCKER_PASSWORD }}"
